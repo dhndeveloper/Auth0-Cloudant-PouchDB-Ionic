@@ -5,7 +5,7 @@
     </ion-title>
 
     <ion-buttons end>
-      <button ion-button>
+      <button ion-button (click)="logout()">
        Log Out
      </button>
     </ion-buttons>
@@ -15,48 +15,63 @@
 
 <ion-content padding>
 
-  <div class="form">
+  <ion-card *ngIf="auth.authenticated()">
 
-    <form [formGroup]="addForm" (submit)="processAddForm()" novalidate>
+    <ion-item *ngIf="auth.user">
+      <ion-avatar item-left>
+        <img src="{{ auth.user.picture }}">
+      </ion-avatar>
+      <h2>{{ auth.user.nickname }}</h2>
+      <p>{{ auth.user.email }}</p>
+    </ion-item>
 
-      <ion-item>
-        <ion-label color="primary" stacked> Name </ion-label>
-        <ion-input #name formControlName="name" required type="name" placeholder="George" [class.invalid]="!addForm.controls.name.valid"></ion-input>
+  </ion-card>
 
+  <div *ngIf="auth.authenticated()">
 
-      </ion-item>
+    <div class="form">
 
-      <ion-item class="error-message" *ngIf="!addForm.controls.name.valid">
-        <p> Name needs more than 2 characters. </p>
-      </ion-item>
+      <form [formGroup]="addForm" (submit)="processAddForm()" novalidate>
 
-      <br/>
+        <ion-item>
+          <ion-label color="primary" stacked> Name </ion-label>
+          <ion-input #name formControlName="name" required type="name" placeholder="George" [class.invalid]="!addForm.controls.name.valid"></ion-input>
+        </ion-item>
 
-      <p>
-        {{ addForm.controls.name.valid }}
-      </p>
+        <br/>
 
-      <button ion-button block color="navBar" type="submit">
-        Add Friend
-    </button>
+        <button ion-button block color="navBar" type="submit">
+          Add Friend
+      </button>
 
-    </form>
+      </form>
 
-  </div>
+    </div>
 
-  <h4> Your Friend List </h4>
+    <h4> Your Friend List </h4>
 
-  <ion-list>
-    <ion-item-sliding>
-      <ion-item>
-        George
-      </ion-item>
-      <ion-item-options side="right">
-        <button danger ion-button>
+    <ion-list>
+      <ion-item-sliding *ngFor="let friend of friends">
+        <ion-item>
+          {{ friend.name }}
+        </ion-item>
+        <ion-item-options side="right">
+          <button danger ion-button (click)="deleteFriend( friend )">
               <ion-icon name="trash"></ion-icon>
             </button>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+
+    <button ion-button block color="navBar" (click)="syncData()">
+        Manual Sync
+      </button>
+
+    <button ion-button block color="navBar" (click)="autoSync()">
+        Auto Sync
+      </button>
+
+  </div>
 
 </ion-content>

@@ -182,6 +182,4 @@ export class FriendService {
 
   }
 
-
-
 }
